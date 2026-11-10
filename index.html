@@ -61,14 +61,66 @@
   .toast.show{transform:translate(-50%,0)}
   .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:22px;line-height:1.5}
   [hidden]{display:none!important}
+  /* ---- Votación final ---- */
+  body.final{background:#10302f}
+  body.final header h1, body.final .sub{color:#fff}
+  body.final .kicker{color:#f2b544}
+  body.final .sub{color:#c9dbd8}
+  body.final .tabs{background:#1b4644}
+  body.final .tab{color:#a9c4c0}
+  body.final .tab.on{background:#f6f1e7;color:var(--ink)}
+  body.final .bar{background:linear-gradient(180deg,rgba(16,48,47,0),#10302f 30%)}
+  body.final .hint, body.final .foot{color:#a9c4c0}
+  body.final .pill{background:#1b4644;border-color:#2a5856;color:#c9dbd8}
+  .fcard{text-align:center;padding:26px 18px}
+  .fcount{font-family:Fraunces,serif;font-weight:800;font-size:72px;line-height:1}
+  .fcount .of{font-size:34px;color:var(--muted)}
+  .flabel{color:var(--muted);margin:4px 0 16px}
+  .fdots{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .fdots span{width:18px;height:18px;border-radius:50%;background:#e6ddcb;transition:background .3s,transform .3s}
+  .fdots span.on{background:var(--sea);transform:scale(1.15)}
+  .mystery{filter:blur(6px);user-select:none;-webkit-user-select:none;letter-spacing:.04em}
+  .reveal{width:100%;padding:18px;font-size:19px;background:linear-gradient(90deg,#d9a531,#e8873a);box-shadow:0 8px 24px rgba(232,135,58,.35)}
+  .reveal:not(:disabled){animation:pulse 1.4s infinite}
+  @keyframes pulse{50%{transform:scale(1.03)}}
+  #stage{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 40%,#1d5653,#0a1f1e 70%);color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  #confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .stage-inner{position:relative;width:100%;max-width:560px;padding:24px;text-align:center}
+  .s-title{font-family:Fraunces,serif;font-weight:800;font-size:30px;line-height:1.15;animation:rise .5s ease both}
+  .s-sub{color:#a9c4c0;font-size:15px;margin-top:8px;animation:rise .5s .1s ease both}
+  .s-elim{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:22px 16px;margin-top:22px;animation:drop .5s ease both}
+  .s-elim .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#f08a7a;font-weight:700}
+  .s-elim .nm{font-family:Fraunces,serif;font-weight:800;font-size:28px;margin:8px 0 4px;overflow-wrap:anywhere}
+  .s-elim .nm.out{text-decoration:line-through;text-decoration-color:#f08a7a;text-decoration-thickness:3px;opacity:.55;transition:opacity .4s}
+  .s-elim .pt{color:#a9c4c0}
+  .s-final{display:flex;gap:12px;margin-top:24px}
+  .s-final div{flex:1;background:rgba(255,255,255,.1);border:1.5px solid #f2b544;border-radius:18px;padding:22px 10px;font-family:Fraunces,serif;font-weight:800;font-size:22px;overflow-wrap:anywhere;animation:shake .35s infinite}
+  .s-final div:nth-child(2){animation-delay:.17s}
+  .s-vs{font-family:Fraunces,serif;font-weight:800;color:#f2b544;font-size:20px;margin-top:14px}
+  .s-count{font-family:Fraunces,serif;font-weight:800;font-size:180px;line-height:1;color:#f2b544;animation:zoom .9s ease both}
+  .s-flash{position:fixed;inset:0;background:#fff;animation:flash .9s ease forwards;pointer-events:none}
+  .s-win-lbl{font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#f2b544;font-weight:700;animation:rise .6s .3s ease both}
+  .s-win{font-family:Fraunces,serif;font-weight:800;font-size:46px;line-height:1.05;margin:14px 0;overflow-wrap:anywhere;animation:boom .9s cubic-bezier(.2,1.6,.4,1) both;text-shadow:0 0 30px rgba(242,181,68,.6)}
+  .s-win-pts{color:#c9dbd8;animation:rise .6s .6s ease both}
+  .s-btns{display:flex;flex-direction:column;gap:10px;margin-top:30px;animation:rise .6s 1.4s ease both}
+  .s-btns .btn{background:#f6f1e7;color:var(--ink)}
+  .s-btns .btn.ghost{background:transparent;color:#c9dbd8}
+  .s-rank{text-align:left;margin-top:18px;display:flex;flex-direction:column;gap:8px}
+  .s-rank div{display:flex;justify-content:space-between;gap:10px;background:rgba(255,255,255,.08);border-radius:12px;padding:12px 14px}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes drop{from{opacity:0;transform:translateY(-30px) scale(.9)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translate(0,0) rotate(0)}25%{transform:translate(-2px,1px) rotate(-1deg)}75%{transform:translate(2px,-1px) rotate(1deg)}}
+  @keyframes zoom{from{opacity:0;transform:scale(2.4)}40%{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.6)}}
+  @keyframes flash{from{opacity:1}to{opacity:0}}
+  @keyframes boom{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="kicker">Viaje de amigos · 2027</div>
+    <div class="kicker" id="kicker">Viaje de amigos · 2027</div>
     <h1 id="title">¿Dónde nos vamos?</h1>
-    <p class="sub">Elige tus 3 destinos favoritos. Tu voto es anónimo y puedes cambiarlo cuando quieras hasta que cerremos la votación.</p>
+    <p class="sub" id="sub">Elige tus 3 destinos favoritos. Tu voto es anónimo y puedes cambiarlo cuando quieras hasta que cerremos la votación.</p>
   </header>
 
   <div class="demo" id="demo">Modo vista previa: los votos solo se guardan en este móvil. En la versión final se comparten entre todos.</div>
@@ -108,6 +160,21 @@
     <p class="foot">3 puntos al favorito de cada persona, 2 al segundo y 1 al tercero. Si hay empate, gana quien tenga más primeros puestos.</p>
   </section>
 
+  <section id="final" hidden>
+    <div class="card fcard">
+      <div class="fcount"><span id="fN">0</span><span class="of"> / <span id="fT">7</span></span></div>
+      <div class="flabel">han votado</div>
+      <div class="fdots" id="fDots"></div>
+      <button class="btn reveal" id="revealBtn" disabled>Esperando a que votéis todos…</button>
+      <button class="btn ghost" id="forceBtn" type="button">¿Falta alguien? Revelar igualmente</button>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div style="font-weight:600;margin-bottom:12px">Así va la cosa… 🤫</div>
+      <div class="res" id="fRes"></div>
+    </div>
+    <p class="foot">Los nombres se desvelan al final. Cuando estéis todos, pulsad el botón a la vez o ponedlo en una pantalla grande.</p>
+  </section>
+
   <p class="foot">Nadie, ni el organizador, puede ver qué ha votado cada persona: solo se guardan los totales.</p>
 </div>
 
@@ -115,6 +182,7 @@
   <div class="inner"><button class="btn" id="save" disabled>Elige tu destino favorito</button></div>
 </div>
 <div class="toast" id="toast"></div>
+<div id="stage" hidden><canvas id="confetti"></canvas><div class="stage-inner" id="stageInner"></div></div>
 
 <script>
 /* ===== CONFIGURACIÓN (se rellena al desplegar) ===== */
@@ -267,15 +335,149 @@ $("#addForm").onsubmit = async ev => {
 
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on", x===t));
-  const r = t.dataset.tab === "results";
-  $("#vote").hidden = r; $("#results").hidden = !r; $("#bar").hidden = r;
-  if(r) renderResults();
+  const tab = t.dataset.tab;
+  ["vote","results","final"].forEach(id => $("#"+id).hidden = id !== tab);
+  $("#bar").hidden = tab !== "vote";
+  if(tab === "results") renderResults();
+  if(tab === "final") renderFinal();
 });
 $("#refresh").onclick = renderResults;
 
+/* ================= VOTACIÓN FINAL ================= */
+const FINAL = location.hash === "#final";
+const FINAL_VOTERS = 7;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let forceArmed = false;
+
+if(FINAL){
+  document.body.classList.add("final");
+  $("#kicker").textContent = "Votación final · en directo";
+  $("#title").textContent = "¡Llegó el día!";
+  $("#sub").textContent = `Vota tus 3 destinos (3, 2 y 1 punto). Los puntos se ven en directo, pero los destinos siguen en secreto hasta que votemos los ${FINAL_VOTERS}.`;
+  const rt = document.querySelector('[data-tab=results]'); rt.dataset.tab = "final"; rt.textContent = "🏆 Ganador";
+  $("#fT").textContent = FINAL_VOTERS;
+}
+
+async function renderFinal(){
+  let n = 0; try{ n = Number(await api.voters()) || 0 }catch(e){}
+  $("#fN").textContent = n;
+  const d = $("#fDots"); d.textContent = "";
+  for(let i=0;i<FINAL_VOTERS;i++){ const s=document.createElement("span"); if(i<n) s.className="on"; d.append(s) }
+  try{
+    const res = (await api.results() || []).map(r=>({p:Number(r.points), f:Number(r.firsts)})).sort((a,b)=>b.p-a.p||b.f-a.f);
+    const max = Math.max(1, ...res.map(r=>r.p)); const box = $("#fRes"); box.textContent = "";
+    const fake = ["Xxxxxx xxx xxxxx","Xxxxxxxx","Xxxx xxxxx","Xxxxxxx x Xxxxxxx","Xxxxx xx Xxxx","Xxxxxxxxx"];
+    res.forEach((r,i) => {
+      const row=el("div","row"); const top=el("div","top");
+      const nm=el("div","nm mystery", fake[(i*7+3)%fake.length]); const pt=el("div","pts"); pt.innerHTML = r.p+' <small>pts</small>';
+      top.append(nm,pt); const tr=el("div","track"); const fl=el("div","fill"); fl.style.width=(r.p/max*100)+"%"; tr.append(fl);
+      row.append(top,tr); box.append(row);
+    });
+  }catch(e){}
+  const b = $("#revealBtn");
+  b.disabled = n < FINAL_VOTERS;
+  b.textContent = n < FINAL_VOTERS ? `Faltan ${FINAL_VOTERS-n} por votar…` : "🏆 Mostrar ganador";
+  $("#forceBtn").hidden = n >= FINAL_VOTERS || n === 0;
+}
+$("#revealBtn").onclick = () => runReveal();
+$("#forceBtn").onclick = () => {
+  if(!forceArmed){ forceArmed = true; $("#forceBtn").textContent = "Toca otra vez para revelar ya"; setTimeout(()=>{ forceArmed=false; $("#forceBtn").textContent="¿Falta alguien? Revelar igualmente" }, 4000); return }
+  runReveal();
+};
+
+/* --- sonido (sintetizado, sin archivos) --- */
+let AC = null;
+function audio(){ try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume() }catch(e){ AC = null } return AC }
+function tone(freq, dur, type="sine", vol=.25, slideTo){
+  const a = AC; if(!a) return;
+  try{ const o=a.createOscillator(), g=a.createGain(); o.type=type; o.frequency.setValueAtTime(freq,a.currentTime);
+    if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo,a.currentTime+dur);
+    g.gain.setValueAtTime(vol,a.currentTime); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime+dur) }catch(e){}
+}
+function noise(dur, vol=.35){
+  const a = AC; if(!a) return;
+  try{ const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), ch=b.getChannelData(0);
+    for(let i=0;i<ch.length;i++) ch[i]=(Math.random()*2-1)*Math.pow(1-i/ch.length,2);
+    const s=a.createBufferSource(), g=a.createGain(); g.gain.value=vol; s.buffer=b; s.connect(g).connect(a.destination); s.start() }catch(e){}
+}
+async function drumroll(ms){ const end=Date.now()+ms; while(Date.now()<end){ noise(.06,.12); await sleep(55) } }
+
+/* --- confeti --- */
+function confetti(){
+  const cv=$("#confetti"), ctx=cv.getContext("2d"); const dpr=window.devicePixelRatio||1;
+  const W=cv.width=innerWidth*dpr, H=cv.height=innerHeight*dpr;
+  const cols=["#f2b544","#e8873a","#ffffff","#5fd3c4","#f08a7a","#9ad06e"];
+  const P=[]; const burst=(x,y,n)=>{ for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, v=(4+Math.random()*11)*dpr;
+    P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-6*dpr,r:(4+Math.random()*6)*dpr,c:cols[i%cols.length],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:1}) } };
+  burst(W/2,H*.45,260);
+  let t=0;
+  (function frame(){
+    t++; if(t===35) { burst(W*.2,H*.3,120); burst(W*.8,H*.3,120) } if(t===80) burst(W/2,H*.2,160);
+    ctx.clearRect(0,0,W,H);
+    P.forEach(p=>{ p.vy+=.28*dpr; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; if(t>150) p.life-=.012;
+      ctx.save(); ctx.globalAlpha=Math.max(p.life,0); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); ctx.restore() });
+    if(t<260) requestAnimationFrame(frame); else ctx.clearRect(0,0,W,H);
+  })();
+}
+
+/* --- la gala --- */
+function scene(build){ const s=$("#stageInner"); s.textContent=""; build(s); }
+function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!==undefined) e.textContent=text; return e }
+
+async function runReveal(){
+  audio();
+  let res;
+  try{ res = (await api.results() || []).map(r => ({ name:r.name, points:Number(r.points), firsts:Number(r.firsts) })) }
+  catch(e){ toast("No se han podido cargar los votos. Inténtalo otra vez."); return }
+  if(!res.length){ toast("No hay destinos"); return }
+  res.sort((a,b)=>b.points-a.points || b.firsts-a.firsts);
+  $("#stage").hidden = false; document.body.style.overflow = "hidden";
+  const pts = p => p + (p===1 ? " punto" : " puntos");
+
+  scene(s => { s.append(el("div","s-title","Se cierran las urnas 🗳️"), el("div","s-sub","Empieza el recuento…")) });
+  tone(523,.25); await sleep(300); tone(659,.25); await sleep(300); tone(784,.4); await sleep(1800);
+
+  const elim = res.slice(2).reverse();
+  for(const e of elim){
+    scene(s => { const c=el("div","s-elim"); const nm=el("div","nm",e.name);
+      c.append(el("div","lbl","Eliminado"), nm, el("div","pt",pts(e.points))); s.append(c);
+      setTimeout(()=>nm.classList.add("out"), 900) });
+    tone(330,.35,"triangle",.25,180); await sleep(2300);
+  }
+
+  if(res.length === 1){ return winner([res[0]], pts) }
+  const [a,b] = res;
+  scene(s => { const f=el("div","s-final"); f.append(el("div","",a.name), el("div","",b.name));
+    s.append(el("div","s-title","Los dos finalistas"), f, el("div","s-vs","¿Cuál será?")) });
+  await drumroll(3200);
+  scene(s => s.append(el("div","s-title","Y el destino del viaje 2027 es…")));
+  await drumroll(1800);
+  for(const n of [3,2,1]){ scene(s => s.append(el("div","s-count",String(n)))); tone(880,.12,"square",.18); await sleep(900) }
+
+  const tie = a.points===b.points && a.firsts===b.firsts;
+  winner(tie ? [a,b] : [a], pts, res);
+}
+
+function winner(ws, pts, res){
+  tone(110,1.2,"sine",.6,35); noise(1.1,.5);
+  const fl = el("div","s-flash"); document.body.append(fl); setTimeout(()=>fl.remove(), 1000);
+  confetti();
+  scene(s => {
+    s.append(el("div","s-win-lbl", ws.length>1 ? "¡Empate en lo más alto!" : "🏆 Destino ganador 🏆"));
+    s.append(el("div","s-win", ws.map(w=>w.name).join(" y ")));
+    s.append(el("div","s-win-pts", ws.length>1 ? "Habrá que desempatar en directo 😅" : `${pts(ws[0].points)} · ${ws[0].firsts} ${ws[0].firsts===1?"voto":"votos"} como favorito`));
+    const btns = el("div","s-btns"); const rank = el("button","btn","Ver clasificación completa"); const close = el("button","btn ghost","Cerrar");
+    rank.onclick = () => { const r=el("div","s-rank"); (res||ws).forEach((x,i)=>{ const row=el("div"); row.append(el("span","",`${i+1}. ${x.name}`), el("strong","",pts(x.points))); r.append(row) }); rank.replaceWith(r) };
+    close.onclick = () => { $("#stage").hidden = true; document.body.style.overflow = "" };
+    btns.append(rank, close); s.append(btns);
+  });
+  setTimeout(()=>{ confetti(); noise(.5,.25) }, 2600);
+}
+
 if(!LIVE) $("#demo").style.display = "block";
 loadAll();
-setInterval(() => { if(!$("#results").hidden) renderResults(); else if(document.visibilityState==="visible") loadAll() }, 15000);
+setInterval(() => { if(!$("#final").hidden) renderFinal(); else if(!$("#results").hidden) renderResults(); else if(document.visibilityState==="visible") loadAll() }, 15000);
 </script>
 </body>
 </html>
