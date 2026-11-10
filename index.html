@@ -79,6 +79,14 @@
   .fdots{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px}
   .fdots span{width:18px;height:18px;border-radius:50%;background:#e6ddcb;transition:background .3s,transform .3s}
   .fdots span.on{background:var(--sea);transform:scale(1.15)}
+  .namecard{margin-bottom:16px}
+  .namecard input{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:13px 14px;font:16px Inter,sans-serif;color:var(--ink)}
+  .namecard input:focus{outline:none;border-color:var(--sea)}
+  .closed{margin-bottom:16px;text-align:center;font-weight:600}
+  .vtable{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;text-align:left}
+  .vtable th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a9c4c0;font-weight:600;padding:6px 4px}
+  .vtable td{padding:9px 4px;border-top:1px solid rgba(255,255,255,.12);vertical-align:top}
+  .vtable td:first-child{font-weight:700}
   .mystery{filter:blur(6px);user-select:none;-webkit-user-select:none;letter-spacing:.04em}
   .reveal{width:100%;padding:18px;font-size:19px;background:linear-gradient(90deg,#d9a531,#e8873a);box-shadow:0 8px 24px rgba(232,135,58,.35)}
   .reveal:not(:disabled){animation:pulse 1.4s infinite}
@@ -131,6 +139,12 @@
   </div>
 
   <section id="vote">
+    <div class="card namecard" id="nameCard" hidden>
+      <label for="voterName" style="font-weight:600;display:block;margin-bottom:8px">Tu nombre</label>
+      <input id="voterName" maxlength="40" placeholder="Ej. Guillem" autocomplete="given-name" enterkeyhint="done">
+      <div style="font-size:13px;color:var(--muted);margin-top:8px">En la final el voto va con nombre: se verá quién votó qué <b>solo después</b> de mostrar el ganador.</div>
+    </div>
+    <div class="card closed" id="closedCard" hidden>🔒 La votación final ya está cerrada. Mira el resultado en la pestaña 🏆 Ganador.</div>
     <div class="howto">
       <span class="pill"><span class="dot p3">3</span>1.º toque</span>
       <span class="pill"><span class="dot p2">2</span>2.º toque</span>
@@ -225,7 +239,14 @@ const api = LIVE ? {
   results(){ return this.call("rpc/results", {}) },
   voters(){ return this.call("rpc/voter_count", {}) },
   mine(){ return this.call("rpc/my_vote", { voter_token: TOKEN }).then(r => r && r[0] || null) },
-  vote(p3,p2,p1){ return this.call("rpc/cast_vote", { voter_token: TOKEN, p3, p2, p1 }) }
+  vote(p3,p2,p1){ return this.call("rpc/cast_vote", { voter_token: TOKEN, p3, p2, p1 }) },
+  castFinal(name,p3,p2,p1){ return this.call("rpc/cast_final_vote", { p_name: name, p3, p2, p1 }) },
+  finalMine(name){ return this.call("rpc/my_final_vote", { p_name: name }).then(r => r && r[0] || null) },
+  finalCount(){ return this.call("rpc/final_count", {}) },
+  finalResults(){ return this.call("rpc/final_results", {}) },
+  finalVotes(){ return this.call("rpc/final_votes", {}) },
+  finalRevealed(){ return this.call("rpc/final_is_revealed", {}) },
+  closeFinal(){ return this.call("rpc/close_final", {}) }
 } : (() => {
   const s = store(); const K = "demo_state_v1";
   const load = () => { try{ return JSON.parse(s.getItem(K)) }catch(e){ return null } };
@@ -242,7 +263,16 @@ const api = LIVE ? {
     },
     async voters(){ return st.ballot ? 1 : 0 },
     async mine(){ return st.ballot },
-    async vote(p3,p2,p1){ st.ballot = {c3:p3,c2:p2,c1:p1}; save() }
+    async vote(p3,p2,p1){ st.ballot = {c3:p3,c2:p2,c1:p1}; save() },
+    async castFinal(name,p3,p2,p1){ const F=st.final=st.final||{votes:{},revealed:false}; if(F.revealed) throw new Error("cerrada"); F.votes[name.trim().toLowerCase()]={name:name.trim(),c3:p3,c2:p2,c1:p1}; save() },
+    async finalMine(name){ const F=st.final||{votes:{}}; return F.votes[name.trim().toLowerCase()]||null },
+    async finalCount(){ return Object.keys((st.final||{votes:{}}).votes).length },
+    async finalResults(){ const F=st.final||{votes:{},revealed:false}; const V=Object.values(F.votes);
+      return st.cands.map(c=>({ name:F.revealed?c.name:null, points:V.reduce((t,b)=>t+(b.c3===c.id?3:b.c2===c.id?2:b.c1===c.id?1:0),0), firsts:V.filter(b=>b.c3===c.id).length })).sort((a,b)=>b.points-a.points||b.firsts-a.firsts) },
+    async finalVotes(){ const F=st.final||{votes:{},revealed:false}; if(!F.revealed) return []; const n=id=>(st.cands.find(c=>c.id===id)||{}).name||null;
+      return Object.values(F.votes).map(b=>({voter:b.name,first_choice:n(b.c3),second_choice:n(b.c2),third_choice:n(b.c1)})) },
+    async finalRevealed(){ return !!(st.final&&st.final.revealed) },
+    async closeFinal(){ st.final=st.final||{votes:{}}; st.final.revealed=true; save() }
   };
 })();
 
@@ -316,6 +346,7 @@ async function loadAll(){
 }
 
 $("#save").onclick = async () => {
+  if(typeof FINAL !== "undefined" && FINAL && !myName()){ toast("Escribe tu nombre arriba ✍️"); $("#voterName").focus(); window.scrollTo({top:0,behavior:"smooth"}); return }
   const btn = $("#save"); btn.disabled = true; btn.textContent = "Guardando…";
   try{ await api.vote(picks[0]||null, picks[1]||null, picks[2]||null); saved = picks.slice(); toast("¡Voto guardado! Gracias 🙌") }
   catch(e){ toast("No se ha podido guardar. Inténtalo otra vez.") }
@@ -356,15 +387,34 @@ if(FINAL){
   $("#sub").textContent = `Vota tus 3 destinos (3, 2 y 1 punto). Los puntos se ven en directo, pero los destinos siguen en secreto hasta que votemos los ${FINAL_VOTERS}.`;
   const rt = document.querySelector('[data-tab=results]'); rt.dataset.tab = "final"; rt.textContent = "🏆 Ganador";
   $("#fT").textContent = FINAL_VOTERS;
+  $("#nameCard").hidden = false;
+  $("#addForm").closest(".card").hidden = true;
+  try{ $("#voterName").value = (store() && store().getItem("final_name")) || "" }catch(e){}
+  $("#voterName").addEventListener("change", () => {
+    try{ store() && store().setItem("final_name", myName()) }catch(e){}
+    picks = []; saved = []; loadAll();
+  });
+  // En la final, el voto va a la tabla de la final, con nombre
+  api.mine = () => myName() ? api.finalMine(myName()) : Promise.resolve(null);
+  api.vote = (a,b,c) => api.castFinal(myName(), a, b, c);
+  api.finalRevealed().then(r => { if(r) setClosed() }).catch(()=>{});
+}
+function myName(){ return ($("#voterName").value || "").trim().replace(/\s+/g," ") }
+let CLOSED = false;
+function setClosed(){
+  CLOSED = true;
+  $("#closedCard").hidden = false; $("#nameCard").hidden = true;
+  $("#cands").style.pointerEvents = "none"; $("#cands").style.opacity = ".5";
+  $("#bar").style.visibility = "hidden";
 }
 
 async function renderFinal(){
-  let n = 0; try{ n = Number(await api.voters()) || 0 }catch(e){}
+  let n = 0; try{ n = Number(await api.finalCount()) || 0 }catch(e){}
   $("#fN").textContent = n;
   const d = $("#fDots"); d.textContent = "";
   for(let i=0;i<FINAL_VOTERS;i++){ const s=document.createElement("span"); if(i<n) s.className="on"; d.append(s) }
   try{
-    const res = (await api.results() || []).map(r=>({p:Number(r.points), f:Number(r.firsts)})).sort((a,b)=>b.p-a.p||b.f-a.f);
+    const res = (await api.finalResults() || []).map(r=>({p:Number(r.points), f:Number(r.firsts)})).sort((a,b)=>b.p-a.p||b.f-a.f);
     const max = Math.max(1, ...res.map(r=>r.p)); const box = $("#fRes"); box.textContent = "";
     const fake = ["Xxxxxx xxx xxxxx","Xxxxxxxx","Xxxx xxxxx","Xxxxxxx x Xxxxxxx","Xxxxx xx Xxxx","Xxxxxxxxx"];
     res.forEach((r,i) => {
@@ -375,6 +425,7 @@ async function renderFinal(){
     });
   }catch(e){}
   const b = $("#revealBtn");
+  if(CLOSED){ b.disabled = false; b.textContent = "🎬 Ver la gala otra vez"; $("#forceBtn").hidden = true; return }
   b.disabled = n < FINAL_VOTERS;
   b.textContent = n < FINAL_VOTERS ? `Faltan ${FINAL_VOTERS-n} por votar…` : "🏆 Mostrar ganador";
   $("#forceBtn").hidden = n >= FINAL_VOTERS || n === 0;
@@ -428,7 +479,10 @@ function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.clas
 async function runReveal(){
   audio();
   let res;
-  try{ res = (await api.results() || []).map(r => ({ name:r.name, points:Number(r.points), firsts:Number(r.firsts) })) }
+  try{
+    if(!CLOSED){ await api.closeFinal(); setClosed() }
+    res = (await api.finalResults() || []).map(r => ({ name:r.name || "?", points:Number(r.points), firsts:Number(r.firsts) }))
+  }
   catch(e){ toast("No se han podido cargar los votos. Inténtalo otra vez."); return }
   if(!res.length){ toast("No hay destinos"); return }
   res.sort((a,b)=>b.points-a.points || b.firsts-a.firsts);
@@ -468,9 +522,17 @@ function winner(ws, pts, res){
     s.append(el("div","s-win", ws.map(w=>w.name).join(" y ")));
     s.append(el("div","s-win-pts", ws.length>1 ? "Habrá que desempatar en directo 😅" : `${pts(ws[0].points)} · ${ws[0].firsts} ${ws[0].firsts===1?"voto":"votos"} como favorito`));
     const btns = el("div","s-btns"); const rank = el("button","btn","Ver clasificación completa"); const close = el("button","btn ghost","Cerrar");
+    const who = el("button","btn","🕵️ ¿Quién votó qué?");
+    who.onclick = async () => {
+      let v = []; try{ v = await api.finalVotes() || [] }catch(e){}
+      const t = el("table","vtable"); const h = el("tr"); ["Quién","3 pts","2 pts","1 pt"].forEach(x=>h.append(el("th","",x))); t.append(h);
+      v.forEach(r => { const tr=el("tr"); [r.voter, r.first_choice, r.second_choice, r.third_choice].forEach(x=>tr.append(el("td","",x||"—"))); t.append(tr) });
+      if(!v.length){ const tr=el("tr"); const td=el("td","","Sin votos"); td.colSpan=4; tr.append(td); t.append(tr) }
+      who.replaceWith(t);
+    };
     rank.onclick = () => { const r=el("div","s-rank"); (res||ws).forEach((x,i)=>{ const row=el("div"); row.append(el("span","",`${i+1}. ${x.name}`), el("strong","",pts(x.points))); r.append(row) }); rank.replaceWith(r) };
     close.onclick = () => { $("#stage").hidden = true; document.body.style.overflow = "" };
-    btns.append(rank, close); s.append(btns);
+    btns.append(who, rank, close); s.append(btns);
   });
   setTimeout(()=>{ confetti(); noise(.5,.25) }, 2600);
 }
