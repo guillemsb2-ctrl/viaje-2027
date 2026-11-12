@@ -618,7 +618,7 @@ function winner(ws, pts, res, opt){
   scene(s => {
     const names = ws.map(w=>w.name); const joined = names.length>1 ? names.slice(0,-1).join(", ")+" y "+names[names.length-1] : names[0];
     s.append(el("div","s-win-lbl", ws.length>1 ? "😱 ¡EMPATE! 😱" : "🏆 Destino ganador 🏆"));
-    s.append(el("div","s-win", joined));
+    const wEl = el("div","s-win", joined); if(joined.length > 40) wEl.style.fontSize = "28px"; else if(joined.length > 22) wEl.style.fontSize = "36px"; s.append(wEl);
     s.append(el("div","s-win-pts", ws.length>1 ? `Empatados a ${pts(ws[0].points)}. ¡Toca segunda vuelta!`
       : opt.kind==="runoff" ? `${pts(ws[0].points)} en la segunda vuelta` : `${pts(ws[0].points)} · ${ws[0].firsts} ${ws[0].firsts===1?"voto":"votos"} como favorito`));
     const btns = el("div","s-btns"); const rank = el("button","btn","Ver clasificación completa"); const close = el("button","btn ghost","Cerrar");
